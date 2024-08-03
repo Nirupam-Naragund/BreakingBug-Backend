@@ -1,3 +1,5 @@
+// 
+
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -309,77 +311,105 @@ const Seller = mongoose.model("seller", sellerSchema);
 
 // Function to create dummy data
 async function createDummyData() {
-  // Dummy Seller
-  const seller = new Seller({
-    name: "John's Shop",
-    email: "john@example.com",
-    password: "password123",
-    shopName: "JohnsShop"
-  });
-  await seller.save();
-
-  // Dummy Customer
-  const customer = new Customer({
-    name: "Jane Doe",
-    email: "jane@example.com",
-    password: "password123",
-    shippingData: {
-      address: "123 Main St",
-      city: "Anytown",
-      state: "Anystate",
-      country: "USA",
-      pinCode: 12345,
-      phoneNo: 1234567890
+  try {
+    // Dummy Seller
+    let seller = await Seller.findOne({ email: "john@example.com" });
+    if (!seller) {
+      seller = new Seller({
+        name: "John's Shop",
+        email: "john@example.com",
+        password: "password123",
+        shopName: "JohnsShop"
+      });
+      await seller.save();
+      console.log('New seller created');
+    } else {
+      console.log('Seller already exists');
     }
-  });
-  await customer.save();
 
-  // Dummy Product
-  const product = new Product({
-    productName: "Sample Product",
-    price: {
-      mrp: 100,
-      cost: 90,
-      discountPercent: 10
-    },
-    subcategory: "Sample Subcategory",
-    productImage: "sample.jpg",
-    category: "Sample Category",
-    description: "This is a sample product.",
-    tagline: "Best product ever!",
-    seller: seller._id
-  });
-  await product.save();
+    // Dummy Customer
+    let customer = await Customer.findOne({ email: "jane@example.com" });
+    if (!customer) {
+      customer = new Customer({
+        name: "Jane Doe",
+        email: "jane@example.com",
+        password: "password123",
+        shippingData: {
+          address: "123 Main St",
+          city: "Anytown",
+          state: "Anystate",
+          country: "USA",
+          pinCode: 12345,
+          phoneNo: 1234567890
+        }
+      });
+      await customer.save();
+      console.log('New customer created');
+    } else {
+      console.log('Customer already exists');
+    }
 
-  // Dummy Order
-  const order = new Order({
-    buyer: customer._id,
-    shippingData: customer.shippingData,
-    orderedProducts: [{
-      productName: product.productName,
-      price: product.price,
-      subcategory: product.subcategory,
-      productImage: product.productImage,
-      category: product.category,
-      description: product.description,
-      tagline: product.tagline,
-      quantity: 1,
-      seller: seller._id
-    }],
-    paymentInfo: {
-      id: "payment123",
-      status: "Paid"
-    },
-    paidAt: new Date(),
-    productsQuantity: 1,
-    taxPrice: 0,
-    shippingPrice: 0,
-    totalPrice: 90,
-    orderStatus: "Processing"
-  });
-  await order.save();
+    // Dummy Product
+    let product = await Product.findOne({ productName: "Sample Product", seller: seller._id });
+    if (!product) {
+      product = new Product({
+        productName: "Sample Product",
+        price: {
+          mrp: 100,
+          cost: 90,
+          discountPercent: 10
+        },
+        subcategory: "Sample Subcategory",
+        productImage: "sample.jpg",
+        category: "Sample Category",
+        description: "This is a sample product.",
+        tagline: "Best product ever!",
+        seller: seller._id
+      });
+      await product.save();
+      console.log('New product created');
+    } else {
+      console.log('Product already exists');
+    }
 
-  console.log('Dummy data created!');
+    // Dummy Order
+    let order = await Order.findOne({ buyer: customer._id, "orderedProducts.productName": product.productName });
+    if (!order) {
+      order = new Order({
+        buyer: customer._id,
+        shippingData: customer.shippingData,
+        orderedProducts: [{
+          productName: product.productName,
+          price: product.price,
+          subcategory: product.subcategory,
+          productImage: product.productImage,
+          category: product.category,
+          description: product.description,
+          tagline: product.tagline,
+          quantity: 1,
+          seller: seller._id
+        }],
+        paymentInfo: {
+          id: "payment123",
+          status: "Paid"
+        },
+        paidAt: new Date(),
+        productsQuantity: 1,
+        taxPrice: 0,
+        shippingPrice: 0,
+        totalPrice: 90,
+        orderStatus: "Processing"
+      });
+      await order.save();
+      console.log('New order created');
+    } else {
+      console.log('Order already exists');
+    }
+
+    console.log('Dummy data creation process completed!');
+  } catch (error) {
+    console.error('Error creating dummy data:', error);
+  }
 }
 
 module.exports = { Customer, Order, Product, Seller };

@@ -4,20 +4,23 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 const {
     sellerRegister,
     sellerLogIn
-} = require('../controllers/orderController.js');
+} = require('../controllers/sellerController.js'); // Error 5 require('../controllers/orderController.js');
+                                                    // After require('../controllers/sellerController.js');
 
 const {
     productCreate,
     getProducts,
-    getProductDetail,
-    searchProductbyCategory,
     getSellerProducts,
+    getProductDetail,
     updateProduct,
+    addReview,
+    searchProduct,
+    searchProductbyCategory,
+    searchProductbySubCategory,
     deleteProduct,
     deleteProducts,
     deleteProductReview,
     deleteAllProductReviews,
-    addReview,
     getInterestedCustomers,
     getAddedToCartProducts,
 } = require('../controllers/productController.js');
@@ -31,7 +34,8 @@ const {
 
 const {
     newOrder,
-    getOrderedProductsBySeller
+    getOrderedProductsByCustomer,
+    getOrderedProductsBySeller,
 } = require('../controllers/orderController.js');
 
 
@@ -69,3 +73,6 @@ router.put('/CustomerUpdate/:id', cartUpdate);
 router.post('/newOrder', newOrder);
 router.get('/getOrderedProductsByCustomer/:id', getOrderedProductsBySeller);
 router.get('/getOrderedProductsBySeller/:id', getOrderedProductsBySeller);
+
+
+module.exports=router; // Added this 

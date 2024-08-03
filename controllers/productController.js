@@ -166,6 +166,11 @@ const deleteProduct = async (req, res) => {
     try {
         const deletedProduct = await Product.findByIdAndDelete(req.params.id);
 
+
+        if (!deletedProduct) {
+            return res.json({ status: 'info', message: "Product not found" });
+        }
+
         await Customer.updateMany(
             { "cartDetails._id": deletedProduct._id },
             { $pull: { cartDetails: { _id: deletedProduct._id } } }
@@ -210,6 +215,12 @@ const deleteProductReview = async (req, res) => {
         const product = await Product.findById(productId);
 
         const updatedReviews = product.reviews.filter(review => review._id != reviewId);
+        
+        if (!product) {
+            return res.json({ status: 'info', message: "Product not found" });
+        }
+
+        
 
         product.reviews = updatedReviews;
 

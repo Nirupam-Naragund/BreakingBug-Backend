@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Seller = require('../models/sellerSchema.js');
-const { createNewToken } = require('../utils/token.js');
+// const { createNewToken } = require('../utils/token.js');
+const createNewToken = require('../utils/token.js');
 
 const sellerRegister = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ const sellerRegister = async (req, res) => {
 
         const seller = new Seller({
             ...req.body,
-            password: bcrypt.hash
+            password: hashedPass
         });
 
         const existingSellerByEmail = await Seller.findOne({ email: req.body.email });
@@ -17,19 +18,18 @@ const sellerRegister = async (req, res) => {
 
         if (existingSellerByEmail) {
             res.send({ message: 'Email already exists' });
-        }
-        else if (existingShop) {
+        } else if (existingShop) {
             res.send({ message: 'Shop name already exists' });
-        }
-        else {
-            let result = await seller.save();
+        } else {
+            // let result = await seller.save();
+            let result = await Seller.create(seller);
             result.password = undefined;
 
-            const token = createNewToken(result._id)
+            const token = createNewToken(result._id);
 
             result = {
-                ...result._doc,
-                token: token
+                // ...result._doc,
+                token
             };
 
             res.send(result);
@@ -47,11 +47,11 @@ const sellerLogIn = async (req, res) => {
             if (validated) {
                 seller.password = undefined;
 
-                const token = createNewToken(seller._id)
+                const token = createNewToken(seller._id);
 
                 seller = {
                     ...seller._doc,
-                    token: tokens
+                    token: token
                 };
 
                 res.send(seller);

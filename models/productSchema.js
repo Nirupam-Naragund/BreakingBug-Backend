@@ -49,7 +49,8 @@ const productSchema =  mongoose.Schema(
                 },
                 date: {
                     type: Date,
-                    default: String,  // Error 1 It should be string
+                    // default: Text, 
+                    default:Date.now 
                 },
             },
         ],
@@ -59,4 +60,5 @@ const productSchema =  mongoose.Schema(
         },
     }, { timestamps: false});
 
-module.exports = mongoose.connect("product", productSchema) // Error 2 It should be mongoose.connect()
+    // module.exports = mongoose.mongoose("product", productSchema)
+module.exports = mongoose.model("product", productSchema) // Error 2 It should be mongoose.model()

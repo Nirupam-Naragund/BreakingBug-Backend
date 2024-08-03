@@ -38,10 +38,11 @@ const getOrderedProductsByCustomer = async (req, res) => {
         
         const orderedProducts = orders.reduce((accumulator, order) => {
             
-            return accumulator.filter(product => {
-                accumulator.push(...order.orderedProducts);
-                return true; 
-            });
+            // return accumulator.filter(product => {
+            //     accumulator.push(...order.orderedProducts);
+            //     return true; 
+            // });
+            return [...accumulator, ...order.orderedProducts];
         }, []);
         
         if (orderedProducts.length > 0) {
@@ -60,7 +61,8 @@ const getOrderedProductsBySeller = async (req, res) => {
         const sellerId = req.params.id;
 
         const ordersWithSellerId = await Order.find({
-            'orderedProducts.sellerId': sellerId
+            // 'orderedProducts.seller': sellerId
+            'orderedProducts.seller': sellerId
         });
 
         if (ordersWithSellerId.length > 0) {
