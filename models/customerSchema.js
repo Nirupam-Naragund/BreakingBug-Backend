@@ -79,4 +79,10 @@ const customerSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("customer", customerSchema)
+
+
+// module.exports = mongoose.model("customer", customerSchema) Before
+
+const Customer = mongoose.models.Customer || mongoose.model('Customer', customerSchema); // After
+
+module.exports = Customer;

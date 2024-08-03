@@ -49,7 +49,7 @@ const productSchema =  mongoose.Schema(
                 },
                 date: {
                     type: Date,
-                    default: Text,
+                    default: String,  // Error 1 It should be string
                 },
             },
         ],
@@ -59,4 +59,4 @@ const productSchema =  mongoose.Schema(
         },
     }, { timestamps: false});
 
-module.exports = mongoose.mongoose("product", productSchema)
+module.exports = mongoose.connect("product", productSchema) // Error 2 It should be mongoose.connect()
